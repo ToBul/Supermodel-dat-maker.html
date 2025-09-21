@@ -141,6 +141,7 @@
 				return;
 			} else {
 				log(`Parsing ${GamesXml}\n`);
+				const knownProblemCrcs = "e028d7ca 60aa9d76"; // mgtrkbad roms
 				const lines = content.split(/\r?\n/);
 				for (const line of lines) {
 					if (line.includes(`<game name=`)) {
@@ -182,6 +183,12 @@
 							}
 
 							datContent += `\t\t<rom name="${splitLine[3]}" size="${romsByCrc[crcTrim].size}" crc="${crcTrim}" sha1="${romsByCrc[crcTrim].sha1}"/>\n`;
+						}
+						else {
+							if (knownProblemCrcs.includes(crcTrim) == false) {
+								datContent += `\t\t<rom name="${splitLine[3]}" crc="${crcTrim}"/> <!-- ########## NOT FOUND IN MAME ########## -->\n`;
+								log(`WARNING\nSupermodel is using a ROM not found in MAME\nrom: ${splitLine[3]}  crc: ${crcTrim}\ndat file will have to be amended manually.\n`);
+							}
 						}
 					}
 				}
