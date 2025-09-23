@@ -30,10 +30,10 @@
 			console.log(message);
 		}
 
-        const dlBtnElement = document.getElementById("dlbutton");
-            dlBtnElement.addEventListener("click", function () {
-                generateOutput();
-        });
+		const dlBtnElement = document.getElementById("dlbutton");
+			dlBtnElement.addEventListener("click", function () {
+				generateOutput();
+		});
 
 		function toggleHiddenElement(id) {
 			const showState = document.getElementById(id);
@@ -255,26 +255,27 @@
 			`Note that drive board emulation is not perfect!\n\n` +
 
 			`BTW:\n` +
-			`Changes or additions to the Model 3 ROM set will be increasingly rare. Most updates to MAME and Supermodel do not touch the ROM set.\n` +
+			`Changes or additions to the Model 3 ROM set will be increasingly rare.\n` +
+			`Most updates to MAME and Supermodel do not touch the ROM set.\n` +
 			`It should not be necessary to update your ROMs as often as some might think.`;
 
 			document.getElementById("output").textContent = info;
 		}
 
-        function download(datOutput) {
-            //creating an invisible element
-            let element = document.createElement('a');
+		function download(datOutput) {
+			//creating an invisible element
+			let element = document.createElement('a');
 
-            element.setAttribute('href',
-                'data:xml;charset=utf-8, '
-                + encodeURIComponent(datOutput));
+			element.setAttribute('href',
+				'data:xml;charset=utf-8, '
+				+ encodeURIComponent(datOutput));
 
-            element.setAttribute('download', "Supermodel.dat");
-            document.body.appendChild(element);
-            element.click();
+			element.setAttribute('download', "Supermodel.dat");
+			document.body.appendChild(element);
+			element.click();
 
-            document.body.removeChild(element);
-        }
+			document.body.removeChild(element);
+		}
 
 		buildDat();
 	</script>
