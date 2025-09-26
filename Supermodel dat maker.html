@@ -82,7 +82,7 @@
 					return;
 				}
 				else {
-					log(`Finding CRCs in ${mameDrivers[i]}\n`);
+					log(`Finding CRCs and collecting sha1 and size info from ${mameDrivers[i]}\n`);
 					const lines = content.split(/\r?\n/);
 					for (const line of lines) {
 						if (line.trimStart().substring(0, 8) == "ROM_LOAD") {
@@ -140,7 +140,7 @@
 				alert(`Error fetching ${GamesXml}\nRefresh the page to try again`);
 				return;
 			} else {
-				log(`Parsing ${GamesXml}\n`);
+				log(`Parsing ${GamesXml} and inserting sha1 and size info\n`);
 				const knownProblemCrcs = "e028d7ca 60aa9d76"; // mgtrkbad roms
 				const lines = content.split(/\r?\n/);
 				for (const line of lines) {
@@ -242,15 +242,16 @@
 			`stcc (from model2)\n` +
 			`segabill\n\n` +
 
-			`Although the dat produced will build ROMS to Supermodel's requirements respecting the parent and child splits,\n` +
-			`you may still get drive board problems in lemans24.\n\n` +
+			`Although the dat produced will build ROMS to Supermodel's requirements respecting the parent\n` +
+			`and child splits, you may still get drive board problems in lemans24.\n\n` +
 
 			`lemans24 has 2 force feed back drive boards listed in the Games.xml.\n` +
 			`epr-18261.ic9 is from stcc.\n` +
 			`epr-19338a.bin is from scud.\n\n` +
 
-			`Supermodel does not yet emulate the stcc ROM as the commands from it are not understood, but the scud ROM can be used in it's place.\n` +
-			`Users need to edit their Games.xml to select which drive board is used.\n\n` +
+			`Supermodel does not yet emulate the stcc ROM as the commands from it are not understood, but\n` +
+			`the scud ROM can be used in it's place. Users need to edit their Games.xml to select which\n` +
+			`drive board is used.\n\n` +
 
 			`Note that drive board emulation is not perfect!\n\n` +
 
