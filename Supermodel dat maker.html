@@ -140,7 +140,7 @@
 				alert(`Error fetching ${GamesXml}\nRefresh the page to try again`);
 				return;
 			} else {
-				log(`Parsing ${GamesXml} and inserting sha1 and size info\n`);
+				log(`Parsing ${GamesXml} and inserting sha1 and size info to CRCs\n`);
 				const knownProblemCrcs = "e028d7ca 60aa9d76"; // mgtrkbad roms
 				const lines = content.split(/\r?\n/);
 				for (const line of lines) {
