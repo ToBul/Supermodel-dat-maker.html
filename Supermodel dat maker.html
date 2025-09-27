@@ -140,7 +140,7 @@
 				alert(`Error fetching ${GamesXml}\nRefresh the page to try again`);
 				return;
 			} else {
-				log(`Parsing ${GamesXml} and inserting sha1 and size info to CRCs\n`);
+				log(`Parsing ${GamesXml} and adding sha1 and size info to CRCs\n`);
 				const knownProblemCrcs = "e028d7ca 60aa9d76"; // mgtrkbad roms
 				const lines = content.split(/\r?\n/);
 				for (const line of lines) {
@@ -186,8 +186,10 @@
 						}
 						else {
 							if (knownProblemCrcs.includes(crcTrim) == false) {
-								datContent += `\t\t<rom name="${splitLine[3]}" crc="${crcTrim}"/> <!-- ########## NOT FOUND IN MAME ########## -->\n`;
-								log(`WARNING\nSupermodel is using a ROM not found in MAME\nrom: ${splitLine[3]}  crc: ${crcTrim}\ndat file will have to be amended manually.\n`);
+								let notFound = `\t\t<rom name="${splitLine[3]}" crc="${crcTrim}"/> <!-- ${`#`.repeat(16)} NOT FOUND IN MAME ${`#`.repeat(16)} -->\n`;
+								datContent += notFound;
+								const lineChar = `*`;
+								log(`${lineChar.repeat(52)} WARNING ${lineChar.repeat(52)}\n\nSupermodel is using a ROM not found in MAME, sha1 and size info will have to be added to the dat file manually.\n\n${notFound.trim()}\n\n${lineChar.repeat(113)}\n`);
 							}
 						}
 					}
