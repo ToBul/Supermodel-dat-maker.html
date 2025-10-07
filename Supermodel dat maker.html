@@ -4,14 +4,14 @@
 	<meta charset="UTF-8">
 	<title>Supermodel dat maker</title>
 	<style>
-		 .hidden {
+		.hidden {
 			display: none;
 		}
 		.show {
-		   display: inline;
+			display: inline;
 		}
 		.div {
-		margin-left: 20px;
+			margin-left: 20px;
 		}
 	</style>
 </head>
@@ -75,14 +75,14 @@
 			const regex = /"(.*?)",\s*0x[0-9a-fA-F]+\s*,\s*0x([0-9a-fA-F]+)\s*,\s*CRC\(([0-9a-fA-F]{8})\)\s*SHA1\(([0-9a-fA-F]{40})\)/;
 			let len = mameDrivers.length;
 			for (let i = 0; i < len; i++) {
-				log(`Fetching file from: ${MameUrl + mameDrivers[i]}`);
+				log(`Fetching content from: ${MameUrl + mameDrivers[i]}`);
 				const content = await getFileContent(MameUrl, mameDrivers[i]);
 				if (!content) {
 					alert(`Error fetching ${mameDrivers[i]}\nRefresh the page to try again`);
 					return;
 				}
 				else {
-					log(`Finding CRCs and collecting sha1 and size info from ${mameDrivers[i]}\n`);
+					log(`Finding CRCs and collecting SHA-1 and size info from ${mameDrivers[i]}\n`);
 					const lines = content.split(/\r?\n/);
 					for (const line of lines) {
 						if (line.trimStart().substring(0, 8) == "ROM_LOAD") {
@@ -134,13 +134,13 @@
 		async function parseGamesxml(romsByCrc) {
 			const SupermodelUrl = "https://raw.githubusercontent.com/trzy/Supermodel/refs/heads/master/Config/";
 			const GamesXml = "Games.xml";
-			log(`Fetching file from: ${SupermodelUrl + GamesXml}`);
+			log(`Fetching content from: ${SupermodelUrl + GamesXml}`);
 			const content = await getFileContent(SupermodelUrl, GamesXml);
 			if (!content) {
 				alert(`Error fetching ${GamesXml}\nRefresh the page to try again`);
 				return;
 			} else {
-				log(`Parsing ${GamesXml} and adding sha1 and size info to CRCs\n`);
+				log(`Parsing ${GamesXml} and adding SHA-1 and size info to the matching CRCs\n`);
 				const knownProblemCrcs = "e028d7ca 60aa9d76"; // mgtrkbad roms
 				const lines = content.split(/\r?\n/);
 				for (const line of lines) {
@@ -189,7 +189,7 @@
 								let notFound = `\t\t<rom name="${splitLine[3]}" crc="${crcTrim}"/> <!-- ${`#`.repeat(16)} NOT FOUND IN MAME ${`#`.repeat(16)} -->\n`;
 								datContent += notFound;
 								const lineChar = `*`;
-								log(`${lineChar.repeat(52)} WARNING ${lineChar.repeat(52)}\n\nSupermodel is using a ROM not found in MAME, sha1 and size info will have to be added to the dat file manually.\n\n${notFound.trim()}\n\n${lineChar.repeat(113)}\n`);
+								log(`${lineChar.repeat(52)} WARNING ${lineChar.repeat(52)}\n\nSupermodel is using a ROM not found in MAME, SHA-1 and size info will have to be added to the dat file manually.\n\n${notFound.trim()}\n\n${lineChar.repeat(113)}\n`);
 							}
 						}
 					}
@@ -244,14 +244,14 @@
 			`stcc (from model2)\n` +
 			`segabill\n\n` +
 
-			`Although the dat produced will build ROMS to Supermodel's requirements respecting the parent\n` +
-			`and child splits, you may still get drive board problems in lemans24.\n\n` +
+			`Although the dat produced will build ROMS to Supermodel's requirements with the correct\n` +
+			`parent and child splits, you may still get drive board problems in lemans24.\n\n` +
 
 			`lemans24 has 2 force feed back drive boards listed in the Games.xml.\n` +
 			`epr-18261.ic9 is from stcc.\n` +
 			`epr-19338a.bin is from scud.\n\n` +
 
-			`Supermodel does not yet emulate the stcc ROM as the commands from it are not understood, but\n` +
+			`Supermodel does not yet emulate the stcc ROM as the commands from it are not understood but\n` +
 			`the scud ROM can be used in it's place. Users need to edit their Games.xml to select which\n` +
 			`drive board is used.\n\n` +
 
