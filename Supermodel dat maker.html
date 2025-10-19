@@ -53,14 +53,16 @@
 			if (Object.keys(romsByCrc).length) {
 				log(`${Object.keys(romsByCrc).length} Unique CRCs found\n`);
 			} else {
+				errorMessage();
 				alert(`Error creating CRC info\nRefresh the page to try again`);
-				return;
+				return
 			}
 
 			await parseGamesxml(romsByCrc);
 				if (!datContent) {
+					errorMessage();
 					alert(`Error creating dat output\nRefresh the page to try again`)
-					return;
+					return
 				}
 
 			log(`Operation finished\n`);
@@ -78,8 +80,9 @@
 				log(`Fetching content from: ${MameUrl + mameDrivers[i]}`);
 				const content = await getFileContent(MameUrl, mameDrivers[i]);
 				if (!content) {
+					errorMessage();
 					alert(`Error fetching ${mameDrivers[i]}\nRefresh the page to try again`);
-					return;
+					return
 				}
 				else {
 					log(`Finding CRCs and collecting SHA-1 and size info from ${mameDrivers[i]}\n`);
@@ -131,14 +134,22 @@
 		  }
 		}
 
+		function errorMessage() {
+			document.write("<html><head><title>error</title></head><body>");
+			document.write("<h1>Error!</h1>");
+			document.write("<p>Refresh the page to try again.</p>");
+			document.write("</body></html>");
+		}
+
 		async function parseGamesxml(romsByCrc) {
 			const SupermodelUrl = "https://raw.githubusercontent.com/trzy/Supermodel/refs/heads/master/Config/";
 			const GamesXml = "Games.xml";
 			log(`Fetching content from: ${SupermodelUrl + GamesXml}`);
 			const content = await getFileContent(SupermodelUrl, GamesXml);
 			if (!content) {
+				errorMessage();
 				alert(`Error fetching ${GamesXml}\nRefresh the page to try again`);
-				return;
+				return
 			} else {
 				log(`Parsing ${GamesXml} and adding SHA-1 and size info to the matching CRCs\n`);
 				const knownProblemCrcs = "e028d7ca 60aa9d76"; // mgtrkbad roms
