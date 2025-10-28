@@ -129,7 +129,7 @@
 			const fileContent = await response.text();
 			return fileContent;
 		  } catch (error) {
-			console.error("Error fetching ${file}", error);
+			console.error(`Error fetching ${file}`, error);
 			return null;
 		  }
 		}
