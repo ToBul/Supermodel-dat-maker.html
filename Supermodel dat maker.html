@@ -92,11 +92,11 @@
 							const match = line.match(regex);
 							if (match) {
 								RomsFound += 1;
-								const filename = match[1].toLocaleLowerCase();
+								const filename = match[1].toLowerCase();
 								const romNameArray = [filename];
 								const size = parseInt(match[2], 16);
-								const crc = match[3].toLocaleLowerCase();
-								const sha1 = match[4].toLocaleLowerCase();
+								const crc = match[3].toLowerCase();
+								const sha1 = match[4].toLowerCase();
 								const foundRom = romsByCrc[crc];
 								if (foundRom) {
 									if ((romsByCrc[crc].romNames.includes(filename)) == false) {
@@ -186,10 +186,10 @@
 					}
 					else if (line.includes(`<file offset=`)) {
 						const splitLine = line.split('"');
-						const crcTrim = splitLine[5].replace("0x", "").toLocaleLowerCase();
+						const crcTrim = splitLine[5].replace("0x", "").toLowerCase();
 						if (romsByCrc[crcTrim])
 						{
-							if ((romsByCrc[crcTrim].romNames.includes(splitLine[3].toLocaleLowerCase())) == false) {
+							if ((romsByCrc[crcTrim].romNames.includes(splitLine[3].toLowerCase())) == false) {
 								console.log(`\nMismatch in crc ${crcTrim}\nSupermodel name: ${splitLine[3]}\nMAME driver name(s): ${romsByCrc[crcTrim].romNames.join(", ")}`);
 							}
 
