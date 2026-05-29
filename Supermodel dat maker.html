@@ -85,7 +85,7 @@
     const MameUrl = "https://raw.githubusercontent.com/mamedev/mame/master/src/mame/sega/";
     const mameDrivers = ["model3.cpp", "segabill.cpp", "model2.cpp"];
     const regex = /"(.*?)",\s*0x[0-9a-fA-F]+\s*,\s*0x([0-9a-fA-F]+)\s*,\s*CRC\(([0-9a-fA-F]{8})\)\s*SHA1\(([0-9a-fA-F]{40})\)/;
-    let len = mameDrivers.length;
+    const len = mameDrivers.length;
     for (let i = 0; i < len; i++) {
       log(`Fetching content from: ${MameUrl + mameDrivers[i]}`);
       const content = await getFileContent(MameUrl, mameDrivers[i]);
@@ -155,14 +155,14 @@
     const SupermodelUrl = "https://raw.githubusercontent.com/trzy/Supermodel/refs/heads/master/Config/";
     const GamesXml = "Games.xml";
     log(`Fetching content from: ${SupermodelUrl + GamesXml}`);
-    const content = await getFileContent(SupermodelUrl, GamesXml);
-    if (!content) {
+    const fetchedContent = await getFileContent(SupermodelUrl, GamesXml);
+    if (!fetchedContent) {
       errorMessage();
       alert(`Error fetching ${GamesXml}\nRefresh the page to try again`);
       return
     } else {
       log(`Parsing ${GamesXml} and adding SHA-1 and size info to the matching CRCs\n`);
-      const knownProblemCrcs = "e028d7ca 60aa9d76"; // mgtrkbad roms
+      const content = removeNode(fetchedContent, "mgtrkbad");
       const lines = content.split(/\r?\n/);
       for (const line of lines) {
         if (line.includes(`<game name=`)) {
@@ -206,37 +206,39 @@
             datContent += `\t\t<rom name="${splitLine[3]}" size="${romsByCrc[crcTrim].size}" crc="${crcTrim}" sha1="${romsByCrc[crcTrim].sha1}"/>\n`;
           }
           else {
-            if (knownProblemCrcs.includes(crcTrim) == false) {
               let notFound = `\t\t<rom name="${splitLine[3]}" crc="${crcTrim}"/> <!-- ${`#`.repeat(16)} NOT FOUND IN MAME ${`#`.repeat(16)} -->\n`;
               datContent += notFound;
               const lineChar = `*`;
               log(`${lineChar.repeat(52)} WARNING ${lineChar.repeat(52)}\n\nSupermodel is using a ROM not found in MAME, SHA-1 and size info will have to be added to the dat file manually.\n\n${notFound.trim()}\n\n${lineChar.repeat(113)}\n`);
-            }
           }
         }
       }
     }
   }
 
+	function removeNode(content, gameNode) {
+			const parser = new DOMParser();
+			const domContent = parser.parseFromString(content, 'text/xml');
+			const nodeToRemove = domContent.querySelector(`game[name="${gameNode}"]`);
+
+			if (nodeToRemove) {
+				console.log(`Removing ${gameNode} from Games.xml`);
+				nodeToRemove.parentNode.removeChild(nodeToRemove);
+			}
+
+		const domContentString = new XMLSerializer().serializeToString(domContent);
+		return domContentString;
+	}
+
   function generateOutput() {
     toggleHiddenElement(`dlbutton`);
     toggleHiddenElement(`editorLink`);
 
-    // Old bad dumps of Magical Truck are no longer found in mame.
-    // Do a simple string replace to remove it.
-    let mgtrkbadFind =
-    `\n` +
-    `\t<machine name="mgtrkbad">\n` +
-    `\t\t<description>Magical Truck Adventure (Japan)</description>\n` +
-    `\t\t<year>1998</year>\n` +
-    `\t\t<manufacturer>Sega</manufacturer>\n` +
-    `\t\t<!--region name="crom"-->\n` +
-    `\t</machine>\n`;
-
     const date = new Date();
     const month = (`0` + `${date.getMonth() + 1}`).slice(-2);
     const day = (`0` + `${date.getDate()}`).slice(-2);
-    let header =
+
+    const header =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<datafile>\n` +
     `\t<header>\n` +
@@ -249,32 +251,32 @@
     `\t\t<comment>Matches Supermodel's Games.xml with mgtrkbad removed</comment>\n` +
     `\t</header>\n`;
 
-    let footer =
+    const footer =
     `\t</machine>\n` +
     `</datafile>`;
 
-    let datOutput = header + datContent.replace(mgtrkbadFind, "") + footer;
+    const datOutput = header + datContent + footer;
 
     download(datOutput);
 
     const info =
     `mgtrkbad in Games.xml has been omitted from the dat as it does not exist in MAME.\n` +
-    `mgtrkbad is not a separate game, it's just the old corrupt ROMs that used to be in magtruck.\n\n` +
+    `mgtrkbad is not a separate game, it's simply old corrupt ROMs that used to be in magtruck.\n\n` +
 
     `To fully build the Supermodel ROM set you will need,\n` +
     `model3 ROM set (Mame 0.263 onwards)\n` +
     `stcc (from model2)\n` +
     `segabill\n\n` +
 
-    `Although the dat produced will build ROMS to Supermodel's requirements with the correct\n` +
-    `parent and child splits, you may still get drive board problems in lemans24.\n\n` +
+    `Although the dat produced will build ROMS to Supermodel's requirements,\n` +
+    `you may still get drive board problems in lemans24.\n\n` +
 
     `lemans24 has 2 force feed back drive boards listed in the Games.xml.\n` +
     `epr-18261.ic9 is from stcc.\n` +
     `epr-19338a.bin is from scud.\n\n` +
 
-    `Supermodel does not yet emulate the stcc ROM as the commands from it are not understood but\n` +
-    `the scud ROM can be used in it's place. Users need to edit their Games.xml to select which\n` +
+    `Supermodel does not yet emulate the stcc ROM as the commands from it are not understood, but\n` +
+    `the scud ROM can be used in its place. Users need to edit their Games.xml to select which\n` +
     `drive board is used.\n\n` +
 
     `Note that drive board emulation is not perfect!\n\n` +
