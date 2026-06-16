@@ -5,6 +5,7 @@
 <title>Supermodel dat maker</title>
 <style>
   body {
+    font-family: 'Segoe UI', sans-serif;
     margin-left: 40px;
   }
   .hidden {
@@ -27,7 +28,7 @@
 	</div>
 
   <div id="editorLink" class="hidden">
-    <p style="font-size:120%">Make Supermodel list only the ROMs you have by editing your Games.xml with this tool,</p>
+    <p style="font-size:120%">Make Supermodel list only the ROMs you have by editing your Games.xml with the tool below,</p>
     <p><a href="https://github.com/ToBul/Supermodel-Games-xml-Editor.html">Games.xml editor</a></p>
 	</div>
 
@@ -95,7 +96,7 @@
         return
       }
       else {
-        log(`Finding CRCs and collecting SHA-1 and size info from ${mameDrivers[i]}\n`);
+        log(`Finding ROM CRCs and collecting SHA-1 and size info from ${mameDrivers[i]}\n`);
         const lines = content.split(/\r?\n/);
         for (const line of lines) {
           if (line.trimStart().substring(0, 8) == "ROM_LOAD") {
@@ -161,7 +162,7 @@
       alert(`Error fetching ${GamesXml}\nRefresh the page to try again`);
       return
     } else {
-      log(`Parsing ${GamesXml} and adding SHA-1 and size info to the matching CRCs\n`);
+      log(`Converting ${GamesXml} to dat format while adding SHA-1 and size info to the matching ROM CRCs\n`);
       const content = removeNode(fetchedContent, "mgtrkbad");
       const lines = content.split(/\r?\n/);
       for (const line of lines) {
