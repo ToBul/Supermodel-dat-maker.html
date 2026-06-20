@@ -21,16 +21,16 @@
 </head>
 <body>
 
-	<div class="div">
-		<p style="font-size:260%">Supermodel dat maker</p>
-		<pre id="output"></pre>
-		<button id="dlbutton" class="hidden">Download Supermodel.dat</button>
-	</div>
+  <div class="div">
+    <p style="font-size:260%">Supermodel dat maker</p>
+    <pre id="output"></pre>
+    <button id="dlbutton" class="hidden">Download Supermodel.dat</button>
+  </div>
 
   <div id="editorLink" class="hidden">
     <p style="font-size:120%">Make Supermodel list only the ROMs you have by editing your Games.xml with the tool below,</p>
     <p><a href="https://github.com/ToBul/Supermodel-Games-xml-Editor.html">Games.xml editor</a></p>
-	</div>
+  </div>
 
 <script>
   /////////////////////////// Element stuff ///////////////////////////
@@ -85,8 +85,8 @@
     let RomsFound = 0;
     const MameUrl = "https://raw.githubusercontent.com/mamedev/mame/master/src/mame/sega/";
     const mameDrivers = ["model3.cpp", "segabill.cpp", "model2.cpp"];
-    const regex = /"(.*?)",\s*0x[0-9a-fA-F]+\s*,\s*0x([0-9a-fA-F]+)\s*,\s*CRC\(([0-9a-fA-F]{8})\)\s*SHA1\(([0-9a-fA-F]{40})\)/;
     const len = mameDrivers.length;
+    const regex = /"(.*?)",\s*0x[0-9a-fA-F]+\s*,\s*0x([0-9a-fA-F]+)\s*,\s*CRC\(([0-9a-fA-F]{8})\)\s*SHA1\(([0-9a-fA-F]{40})\)/;
     for (let i = 0; i < len; i++) {
       log(`Fetching content from: ${MameUrl + mameDrivers[i]}`);
       const content = await getFileContent(MameUrl, mameDrivers[i]);
@@ -217,19 +217,19 @@
     }
   }
 
-	function removeNode(content, gameNode) {
-			const parser = new DOMParser();
-			const domContent = parser.parseFromString(content, 'text/xml');
-			const nodeToRemove = domContent.querySelector(`game[name="${gameNode}"]`);
+  function removeNode(content, gameNode) {
+      const parser = new DOMParser();
+      const domContent = parser.parseFromString(content, 'text/xml');
+      const nodeToRemove = domContent.querySelector(`game[name="${gameNode}"]`);
 
-			if (nodeToRemove) {
-				console.log(`Removing ${gameNode} from Games.xml`);
-				nodeToRemove.parentNode.removeChild(nodeToRemove);
-			}
+      if (nodeToRemove) {
+        console.log(`Removing ${gameNode} from Games.xml`);
+        nodeToRemove.parentNode.removeChild(nodeToRemove);
+      }
 
-		const domContentString = new XMLSerializer().serializeToString(domContent);
-		return domContentString;
-	}
+    const domContentString = new XMLSerializer().serializeToString(domContent);
+    return domContentString;
+  }
 
   function generateOutput() {
     toggleHiddenElement(`dlbutton`);
